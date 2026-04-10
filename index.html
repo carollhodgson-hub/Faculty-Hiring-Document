@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interactive Hiring Document</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f4f7fb;
+      margin: 20px;
+      color: #1e2a39;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 14px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+    }
+
+    h1, h2, h3, h4 {
+      color: #243447;
+      margin-bottom: 10px;
+    }
+
+    .intro {
+      color: #516172;
+      margin-bottom: 25px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cfd8e3;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .section {
+      margin-top: 30px;
+      padding-top: 15px;
+      border-top: 1px solid #e4eaf2;
+    }
+
+    .question-box {
+      background: #eef3ff;
+      border: 1px solid #d8e3ff;
+      padding: 14px;
+      border-radius: 10px;
+      margin: 12px 0;
+    }
+
+    .question-box p {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .question-actions {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    button {
+      border: none;
+      background: #5d72ff;
+      color: white;
+      padding: 11px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    button:hover {
+      background: #445ae8;
+    }
+
+    button.secondary {
+      background: #6c7a89;
+    }
+
+    button.secondary:hover {
+      background: #586573;
+    }
+
+    .results {
+      margin-top: 22px;
+      padding: 18px;
+      background: #f8fbff;
+      border: 1px solid #d7e5f5;
+      border-radius: 10px;
+    }
+
+    .score-line {
+      font-size: 16px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .recommendation {
+      font-size: 18px;
+      font-weight: 700;
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      display: inline-block;
+    }
+
+    .hire-strong {
+      background: #e7f7ec;
+      color: #1e6a37;
+    }
+
+    .hire {
+      background: #edf4ff;
+      color: #204a8e;
+    }
+
+    .consider {
+      background: #fff7e6;
+      color: #8a5a00;
+    }
+
+    .no-hire {
+      background: #fdecec;
+      color: #9f2d2d;
+    }
+
+    .print-note {
+      margin-top: 12px;
+      color: #667788;
+      font-size: 13px;
+    }
+
+    @media (max-width: 760px) {
+      .grid,
+      .question-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+        margin: 0;
+      }
+
+      .container {
+        box-shadow: none;
+        max-width: 100%;
+        border-radius: 0;
+        padding: 15px;
+      }
+
+      .button-row,
+      .print-note {
+        display: none !important;
+      }
+
+      input, select, textarea {
+        border: 1px solid #999;
+        background: white;
+      }
+
+      .question-box {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Interactive Hiring Document</h1>
+    <p class="intro">
+      Complete the candidate information below, generate interview questions, score responses, and save the completed document as a PDF.
+    </p>
+
+    <div class="grid">
+      <div>
+        <label for="facultyName">Faculty Name</label>
+        <input type="text" id="facultyName" />
+      </div>
+
+      <div>
+        <label for="phoneNumber">Phone Number</label>
+        <input type="text" id="phoneNumber" />
+      </div>
+
+      <div class="full">
+        <label for="emailAddress">Email Address</label>
+        <input type="email" id="emailAddress" />
+      </div>
+
+      <div>
+        <label for="positionApplied">Position Applied For</label>
+        <select id="positionApplied">
+          <option value="">Select option</option>
+          <option>Anthropology Faculty</option>
+          <option>Geography Faculty</option>
+          <option>History Faculty</option>
+          <option>Political Science Faculty</option>
+          <option>Psychology Faculty</option>
+          <option>Sociology Faculty</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="facultyStatus">Faculty Status</label>
+        <select id="facultyStatus">
+          <option value="">Select option</option>
+          <option>Adjunct</option>
+          <option>Full-time</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="facultyEducation">Faculty Education</label>
+        <select id="facultyEducation">
+          <option value="">Select option</option>
+          <option>Master’s degree in discipline</option>
+          <option>Master’s degree in another discipline with 18 graduate credit hours in discipline prefix courses</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="yearsTeaching">Number of Years Teaching</label>
+        <select id="yearsTeaching">
+          <option value="">Select option</option>
+          <option>1–5</option>
+          <option>6–10</option>
+          <option>11–15</option>
+          <option>16–20</option>
+          <option>21 or more</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="communityCollegeExperience">Experience Teaching in Community College Setting</label>
+        <select id="communityCollegeExperience">
+          <option value="">Select option</option>
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="locationType">Location</label>
+        <select id="locationType">
+          <option value="">Select option</option>
+          <option>In-state local</option>
+          <option>In-state not local</option>
+          <option>Out of state</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Interview Question Areas</h2>
+      <p class="intro">Each area will display 3 randomly selected questions.</p>
+
+      <div class="button-row">
+        <button type="button" onclick="generateQuestions()">Generate Questions</button>
+        <button type="button" class="secondary" onclick="calculateScore()">Calculate Recommendation</button>
+        <button type="button" class="secondary" onclick="window.print()">Save / Download as PDF</button>
+      </div>
+
+      <div id="questionsContainer"></div>
+    </div>
+
+    <div class="section">
+      <h2>Evaluation Summary</h2>
+      <div id="results" class="results">
+        <div class="score-line">Total Score: <span id="totalScore">0</span></div>
+        <div class="score-line">Average Score: <span id="averageScore">0.00</span></div>
+        <div class="score-line">Questions Scored: <span id="questionsScored">0</span></div>
+        <div id="recommendationBox"></div>
+        <div class="print-note">
+          To save the completed form as a PDF, click <strong>Save / Download as PDF</strong> and choose <strong>Save as PDF</strong> in your browser's print window.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const categories = {
+      "1. Critical Thinking, Decision Making, Objective Analysis": [
+        "Describe a time you had to make a difficult instructional decision. What factors did you consider and what was the outcome?",
+        "How do you evaluate student work objectively while still providing meaningful support and encouragement?",
+        "Tell us about a time you identified a problem in a course or process and developed a solution.",
+        "How do you encourage critical thinking in both online and classroom settings?",
+        "Describe how you use evidence or data to make instructional decisions."
+      ],
+      "2. Experience Teaching Online and Classroom in College Setting / Enthusiasm for Fostering Student Growth": [
+        "Describe your experience teaching both online and face-to-face courses at the college level.",
+        "How do you build engagement and community in an online class?",
+        "What strategies do you use to support student growth and persistence?",
+        "How do you adapt your instruction for students with different academic needs and backgrounds?",
+        "What do you find most rewarding about teaching community college students?"
+      ],
+      "3. General Compliance": [
+        "How do you ensure compliance with course policies, institutional expectations, and deadlines?",
+        "What is your understanding of academic integrity, FERPA, or similar faculty responsibilities?",
+        "How do you maintain accurate grading, communication, and course records?",
+        "Describe your experience using required college systems and processes.",
+        "How do you stay informed about policy updates and procedural changes?"
+      ],
+      "4. Conflict Management, Interpersonal Skills, Adaptability, Resilience": [
+        "Describe a time you managed a conflict with a student, colleague, or supervisor.",
+        "How do you handle feedback or unexpected change in the workplace?",
+        "Tell us about a time you had to adapt quickly to a new teaching or workplace challenge.",
+        "How do you maintain professionalism in difficult situations?",
+        "What interpersonal strengths do you bring to a department team?"
+      ],
+      "5. Time Optimization": [
+        "How do you balance grading, course preparation, student communication, and other responsibilities?",
+        "Describe a system or strategy you use to stay organized and meet deadlines.",
+        "How do you manage multiple courses or responsibilities during a busy semester?",
+        "Tell us about a time you had competing priorities and how you handled them.",
+        "How do you structure your time differently for online teaching versus face-to-face teaching?"
+      ]
+    };
+
+    function shuffleArray(array) {
+      const copy = [...array];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function generateQuestions() {
+      const container = document.getElementById("questionsContainer");
+      container.innerHTML = "";
+
+      Object.keys(categories).forEach((categoryTitle, categoryIndex) => {
+        const selectedQuestions = shuffleArray(categories[categoryTitle]).slice(0, 3);
+
+        const section = document.createElement("div");
+        section.className = "section";
+
+        const heading = document.createElement("h3");
+        heading.textContent = categoryTitle;
+        section.appendChild(heading);
+
+        selectedQuestions.forEach((questionText, questionIndex) => {
+          const questionBox = document.createElement("div");
+          questionBox.className = "question-box";
+
+          questionBox.innerHTML = `
+            <p>${questionText}</p>
+            <div class="question-actions">
+              <div>
+                <label for="score-${categoryIndex}-${questionIndex}">Rating</label>
+                <select class="score-input" id="score-${categoryIndex}-${questionIndex}">
+                  <option value="">Select rating</option>
+                  <option value="1">1 - Poor</option>
+                  <option value="2">2 - Below Expectations</option>
+                  <option value="3">3 - Meets Expectations</option>
+                  <option value="4">4 - Strong</option>
+                  <option value="5">5 - Excellent</option>
+                </select>
+              </div>
+              <div>
+                <label for="comment-${categoryIndex}-${questionIndex}">Comments</label>
+                <textarea id="comment-${categoryIndex}-${questionIndex}" placeholder="Enter notes or comments here..."></textarea>
+              </div>
+            </div>
+          `;
+
+          section.appendChild(questionBox);
+        });
+
+        container.appendChild(section);
+      });
+
+      document.getElementById("totalScore").textContent = "0";
+      document.getElementById("averageScore").textContent = "0.00";
+      document.getElementById("questionsScored").textContent = "0";
+      document.getElementById("recommendationBox").innerHTML = "";
+    }
+
+    function calculateScore() {
+      const scores = document.querySelectorAll(".score-input");
+      let total = 0;
+      let count = 0;
+
+      scores.forEach((scoreField) => {
+        if (scoreField.value !== "") {
+          total += parseInt(scoreField.value, 10);
+          count++;
+        }
+      });
+
+      const average = count > 0 ? (total / count) : 0;
+
+      document.getElementById("totalScore").textContent = total;
+      document.getElementById("averageScore").textContent = average.toFixed(2);
+      document.getElementById("questionsScored").textContent = count;
+
+      const recommendationBox = document.getElementById("recommendationBox");
+
+      let recommendationText = "";
+      let recommendationClass = "";
+
+      if (count === 0) {
+        recommendationText = "No recommendation available until at least one question is scored.";
+        recommendationClass = "consider";
+      } else if (average >= 4.5) {
+        recommendationText = "Recommendation: Hire - Highly Recommended";
+        recommendationClass = "hire-strong";
+      } else if (average >= 3.5) {
+        recommendationText = "Recommendation: Hire - Recommended";
+        recommendationClass = "hire";
+      } else if (average >= 2.5) {
+        recommendationText = "Recommendation: Borderline / Consider with Reservations";
+        recommendationClass = "consider";
+      } else {
+        recommendationText = "Recommendation: Do Not Hire";
+        recommendationClass = "no-hire";
+      }
+
+      recommendationBox.innerHTML = `<div class="recommendation ${recommendationClass}">${recommendationText}</div>`;
+    }
+
+    generateQuestions();
+  </script>
+</body>
+</html>

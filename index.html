@@ -293,10 +293,10 @@
 
     <div class="section">
       <h2>Interview Question Areas</h2>
-      <p class="intro">Each area will display 3 randomly selected questions.</p>
+      <p class="intro">Each area displays only 3 randomly selected questions.</p>
 
       <div class="button-row">
-        <button type="button" onclick="generateQuestions()">Generate Questions</button>
+        <button type="button" onclick="generateQuestions()">Generate New Questions</button>
         <button type="button" class="secondary" onclick="calculateScore()">Calculate Recommendation</button>
         <button type="button" class="secondary" onclick="window.print()">Save / Download as PDF</button>
       </div>
@@ -312,7 +312,7 @@
         <div class="score-line">Questions Scored: <span id="questionsScored">0</span></div>
         <div id="recommendationBox"></div>
         <div class="print-note">
-          To save the completed form as a PDF, click <strong>Save / Download as PDF</strong> and choose <strong>Save as PDF</strong> in your browser's print window.
+          Click <strong>Save / Download as PDF</strong> and choose <strong>Save as PDF</strong> in the print window.
         </div>
       </div>
     </div>
@@ -358,20 +358,20 @@
     };
 
     function shuffleArray(array) {
-      const copy = [...array];
-      for (let i = copy.length - 1; i > 0; i--) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [copy[i], copy[j]] = [copy[j], copy[i]];
+        [arr[i], arr[j]] = [arr[j], arr[i]];
       }
-      return copy;
+      return arr;
     }
 
     function generateQuestions() {
       const container = document.getElementById("questionsContainer");
       container.innerHTML = "";
 
-      Object.keys(categories).forEach((categoryTitle, categoryIndex) => {
-        const selectedQuestions = shuffleArray(categories[categoryTitle]).slice(0, 3);
+      Object.entries(categories).forEach(([categoryTitle, questions], categoryIndex) => {
+        const selectedQuestions = shuffleArray(questions).slice(0, 3);
 
         const section = document.createElement("div");
         section.className = "section";
@@ -422,21 +422,20 @@
       let total = 0;
       let count = 0;
 
-      scores.forEach((scoreField) => {
+      scores.forEach(scoreField => {
         if (scoreField.value !== "") {
           total += parseInt(scoreField.value, 10);
           count++;
         }
       });
 
-      const average = count > 0 ? (total / count) : 0;
+      const average = count > 0 ? total / count : 0;
 
       document.getElementById("totalScore").textContent = total;
       document.getElementById("averageScore").textContent = average.toFixed(2);
       document.getElementById("questionsScored").textContent = count;
 
       const recommendationBox = document.getElementById("recommendationBox");
-
       let recommendationText = "";
       let recommendationClass = "";
 

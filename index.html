@@ -55,7 +55,6 @@
       margin: 0 0 6px 0;
       font-size: 2rem;
       font-weight: 700;
-      letter-spacing: 0.2px;
     }
 
     .header p {
@@ -179,6 +178,7 @@
     .question-text {
       font-weight: 600;
       color: var(--text);
+      flex: 1;
     }
 
     .mini-btn {
@@ -505,10 +505,14 @@
         const block = document.createElement("div");
         block.className = "category-block";
 
+        const options = category.questions.map(question => {
+          return `<option value="${escapeAttribute(question)}">${escapeHtml(question)}</option>`;
+        }).join("");
+
         block.innerHTML = `
           <div class="category-head">
             <div>
-              <h3>${category.title}</h3>
+              <h3>${escapeHtml(category.title)}</h3>
               <p>Select a question to add it below. You may add multiple questions and remove any that are not needed.</p>
             </div>
           </div>
@@ -516,7 +520,7 @@
           <label for="categorySelect${index}">Choose a question</label>
           <select id="categorySelect${index}" onchange="addQuestion(${index}, this)">
             <option value="">Select a question</option>
-            ${category.questions.map(q => `<option value="${escapeHtml(q)}">${q}</option>`).join("")}
+            ${options}
           </select>
 
           <div class="question-list" id="questionList${index}"></div>
@@ -527,9 +531,18 @@
     }
 
     function escapeHtml(text) {
-      const div = document.createElement("div");
-      div.textContent = text;
-      return div.innerHTML;
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function escapeAttribute(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
     }
 
     function addQuestion(categoryIndex, selectEl) {
@@ -543,33 +556,72 @@
       box.className = "question-box";
       box.setAttribute("data-question-id", questionId);
 
-      box.innerHTML = `
-        <div class="question-top">
-          <div class="question-text">${questionText}</div>
-          <button type="button" class="mini-btn" onclick="removeQuestion('${questionId}')">Remove Question</button>
-        </div>
+      const top = document.createElement("div");
+      top.className = "question-top";
 
-        <div class="question-grid">
-          <div>
-            <label for="score_${questionId}">Rating</label>
-            <select class="score-input" id="score_${questionId}">
-              <option value="">Select rating</option>
-              <option value="1">1 - Poor</option>
-              <option value="2">2 - Below Expectations</option>
-              <option value="3">3 - Meets Expectations</option>
-              <option value="4">4 - Strong</option>
-              <option value="5">5 - Excellent</option>
-            </select>
-          </div>
+      const textDiv = document.createElement("div");
+      textDiv.className = "question-text";
+      textDiv.textContent = questionText;
 
-          <div>
-            <label for="comment_${questionId}">Comments / Candidate Response Notes</label>
-            <textarea id="comment_${questionId}" placeholder="Enter notes here..."></textarea>
-          </div>
-        </div>
-      `;
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "mini-btn";
+      removeBtn.textContent = "Remove Question";
+      removeBtn.onclick = function () {
+        removeQuestion(questionId);
+      };
 
+      top.appendChild(textDiv);
+      top.appendChild(removeBtn);
+
+      const grid = document.createElement("div");
+      grid.className = "question-grid";
+
+      const ratingWrap = document.createElement("div");
+      const ratingLabel = document.createElement("label");
+      ratingLabel.setAttribute("for", `score_${questionId}`);
+      ratingLabel.textContent = "Rating";
+
+      const ratingSelect = document.createElement("select");
+      ratingSelect.className = "score-input";
+      ratingSelect.id = `score_${questionId}`;
+
+      [
+        ["", "Select rating"],
+        ["1", "1 - Poor"],
+        ["2", "2 - Below Expectations"],
+        ["3", "3 - Meets Expectations"],
+        ["4", "4 - Strong"],
+        ["5", "5 - Excellent"]
+      ].forEach(([val, label]) => {
+        const option = document.createElement("option");
+        option.value = val;
+        option.textContent = label;
+        ratingSelect.appendChild(option);
+      });
+
+      ratingWrap.appendChild(ratingLabel);
+      ratingWrap.appendChild(ratingSelect);
+
+      const commentWrap = document.createElement("div");
+      const commentLabel = document.createElement("label");
+      commentLabel.setAttribute("for", `comment_${questionId}`);
+      commentLabel.textContent = "Comments / Candidate Response Notes";
+
+      const commentBox = document.createElement("textarea");
+      commentBox.id = `comment_${questionId}`;
+      commentBox.placeholder = "Enter notes here...";
+
+      commentWrap.appendChild(commentLabel);
+      commentWrap.appendChild(commentBox);
+
+      grid.appendChild(ratingWrap);
+      grid.appendChild(commentWrap);
+
+      box.appendChild(top);
+      box.appendChild(grid);
       list.appendChild(box);
+
       selectEl.value = "";
     }
 
